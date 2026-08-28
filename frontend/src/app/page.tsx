@@ -84,6 +84,16 @@ export default function Home() {
         })
       }
     }
+  }, [])
+}
+
+export default function Home() {
+  useScrollMotion()
+  const [stats, setStats] = useState({ total_items: 0, lost_items: 0, found_items: 0, resolved_items: 0 })
+  const [items, setItems] = useState<Item[]>([])
+  const [query, setQuery] = useState("")
+  const [type, setType] = useState("")
+  const [category, setCategory] = useState("")
 
     fetchData()
   }, [])
@@ -441,6 +451,13 @@ export default function Home() {
           })}
         </div>
       </section>
+
+      <section className="steps-section section-wrap"><div className="section-intro centered reveal"><p className="eyebrow">A better way back</p><h2>Small actions.<br /><em>Big reunions.</em></h2></div><div className="steps-grid"><div className="step-card reveal"><span>01</span><div className="step-icon"><Package size={24} /></div><h3>Report it</h3><p>Add the details that make your item recognizable. Photos help too.</p></div><div className="step-card reveal"><span>02</span><div className="step-icon"><Sparkles size={24} /></div><h3>We connect the dots</h3><p>Smart matching surfaces likely connections across reports.</p></div><div className="step-card reveal"><span>03</span><div className="step-icon"><Heart size={24} /></div><h3>Bring it home</h3><p>Coordinate a secure handoff and close the case together.</p></div></div></section>
+
+      <section className="community-section section-wrap"><div className="community-panel reveal"><div><p className="eyebrow">Built by the community</p><h2>Good things find<br /><em>their way back.</em></h2><p>Every report, upvote, and returned item makes campus a little more connected.</p><Link href="/report/found" className="action-button found">Report a found item <ArrowRight size={17} /></Link></div><div className="community-art" data-parallax="0.05"><div className="art-ring ring-one" /><div className="art-ring ring-two" /><Heart size={62} fill="currentColor" /></div></div></section>
+
+      <section className="closing-section"><div className="reveal"><Bell size={27} /><p className="eyebrow">Your next reunion could start here</p><h2>Keep good things<br /><em>moving.</em></h2><p>Lost it or found it? Your campus is ready to help.</p><div className="hero-actions"><Link href="/report/lost" className="action-button lost">Report lost item <ArrowRight size={17} /></Link><Link href="/report/found" className="action-button light">Report found item <ArrowRight size={17} /></Link></div></div></section>
+      <footer className="landing-footer"><span>Lost &amp; Found Management</span><span>Made for campus communities</span><span>© 2026</span></footer>
     </div>
   )
 }

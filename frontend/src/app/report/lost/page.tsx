@@ -48,6 +48,23 @@ export default function ReportLostPage() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const [previews, setPreviews] = useState<string[]>([])
+
+  const hasToken = () => Boolean(localStorage.getItem("token"))
+
+  useEffect(() => {
+    const nextPreviews = images.map((image) => URL.createObjectURL(image))
+    setPreviews(nextPreviews)
+    return () => nextPreviews.forEach((preview) => URL.revokeObjectURL(preview))
+  }, [images])
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.replace("/login?redirect=/report/lost")
+    }
+  }, [router])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -92,6 +109,13 @@ export default function ReportLostPage() {
     setImages(updated)
     setImagePreviews(updated.map((f) => URL.createObjectURL(f)))
   }
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    addImages(Array.from(e.target.files || []))
+    e.target.value = ""
+  }
+
+  const removeImage = (index: number) => setImages((current) => current.filter((_, fileIndex) => fileIndex !== index))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
