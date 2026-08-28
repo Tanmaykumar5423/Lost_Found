@@ -1,7 +1,6 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Boolean, ARRAY, LargeBinary
+from sqlalchemy import Column, Integer, String, DateTime, Enum
 from sqlalchemy.sql import func
 from app.core.database import Base
-from pgvector.sqlalchemy import Vector
 import enum
 
 class UserRole(str, enum.Enum):

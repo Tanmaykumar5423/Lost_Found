@@ -1,22 +1,34 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { itemService } from "@/services/api"
+import { Item } from "@/types"
+import ItemCard from "@/components/ItemCard"
+import { CAMPUS_ZONES } from "@/components/LocationPicker"
+import Link from "next/link"
+import {
+  Search,
+  Filter,
+  X,
+  Sparkles,
+  AlertCircle,
+  Building2,
+} from "lucide-react"
 
-interface Item {
-  id: number
-  title: string
-  category: string
-  campus_zone: string
-  type: string
-  is_high_value: boolean
-  image_urls: string[]
-  created_at: string
-}
+const CATEGORIES = [
+  { id: "", label: "All Categories" },
+  { id: "ELECTRONICS", label: "Electronics" },
+  { id: "WALLETS_CARDS", label: "Wallets & Cards" },
+  { id: "KEYS", label: "Keys & Chains" },
+  { id: "CLOTHING", label: "Clothing" },
+  { id: "DOCUMENTS", label: "Documents & IDs" },
+  { id: "OTHER", label: "Other" },
+]
 
 export default function FeedPage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
+  const [search, setSearch] = useState("")
   const [filters, setFilters] = useState({
     category: "",
     campus_zone: "",
@@ -26,148 +38,212 @@ export default function FeedPage() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await itemService.getFeed(0, 20, filters)
+        setLoading(true)
+        const response = await itemService.getFeed(0, 50, {
+          category: filters.category || undefined,
+          campus_zone: filters.campus_zone || undefined,
+          type: filters.type || undefined,
+          search: search.trim() || undefined,
+        })
         setItems(response.data)
       } catch (error) {
-        console.error("Failed to fetch items:", error)
+        console.error("Failed to fetch feed items:", error)
       } finally {
         setLoading(false)
       }
     }
 
-    fetchItems()
-  }, [filters])
+    const timer = setTimeout(() => {
+      fetchItems()
+    }, 200)
+
+    return () => clearTimeout(timer)
+  }, [filters, search])
+
+  const clearFilters = () => {
+    setSearch("")
+    setFilters({ category: "", campus_zone: "", type: "" })
+  }
+
+  const hasActiveFilters = search || filters.category || filters.campus_zone || filters.type
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl font-bold">Campus Item Feed</h1>
+    <div className="space-y-10 animate-fade-in-up">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[#1f1f1f] pb-6">
+        <div>
+          <span className="subheading-section">Live Campus Ledger</span>
+          <h1 className="heading-section mt-1">Campus Public Feed</h1>
+          <p className="text-xs text-[#888888] font-body mt-1">
+            Real-time lost & found property reports across academic zones with Zero-Knowledge protection.
+          </p>
+        </div>
 
-      {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow space-y-4">
-        <h2 className="text-lg font-semibold">Filters</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Type</label>
-            <select
-              value={filters.type}
-              onChange={(e) =>
-                setFilters({ ...filters, type: e.target.value })
-              }
-              className="w-full border rounded px-3 py-2"
+        <div className="flex items-center gap-3">
+          <Link href="/report/lost" className="btn-unfold-red !py-2.5 !px-5 !text-[10px]">
+            Report Lost
+          </Link>
+          <Link href="/report/found" className="btn-unfold-outline !py-2.5 !px-5 !text-[10px]">
+            Report Found (+25 Karma)
+          </Link>
+        </div>
+      </div>
+
+      {/* Type Toggle Tabs */}
+      <div className="flex items-center gap-2 border-b border-[#1f1f1f] pb-3 overflow-x-auto">
+        <button
+          onClick={() => setFilters({ ...filters, type: "" })}
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
+            filters.type === ""
+              ? "bg-white text-black font-extrabold"
+              : "bg-[#141414] text-[#888888] hover:text-white"
+          }`}
+        >
+          All Listings
+        </button>
+
+        <button
+          onClick={() => setFilters({ ...filters, type: "LOST" })}
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
+            filters.type === "LOST"
+              ? "bg-[#e63946] text-white"
+              : "bg-[#141414] text-[#888888] hover:text-[#e63946]"
+          }`}
+        >
+          🚨 Lost Items
+        </button>
+
+        <button
+          onClick={() => setFilters({ ...filters, type: "FOUND" })}
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
+            filters.type === "FOUND"
+              ? "bg-emerald-600 text-white"
+              : "bg-[#141414] text-[#888888] hover:text-emerald-400"
+          }`}
+        >
+          ✨ Found Items
+        </button>
+      </div>
+
+      {/* Search & Filter Panel */}
+      <div className="unfold-card p-6 space-y-4">
+        {/* Search */}
+        <div className="relative">
+          <Search className="w-4 h-4 text-[#666666] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search items by keywords, brand, color, stickers or location..."
+            className="w-full text-xs font-body bg-[#0a0a0a] border border-[#262626] rounded-xl pl-11 pr-10 py-3.5 text-white focus:ring-2 focus:ring-[#e63946] focus:border-transparent font-medium"
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#666666] hover:text-white rounded-full"
             >
-              <option value="">All</option>
-              <option value="LOST">Lost</option>
-              <option value="FOUND">Found</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">Category</label>
-            <select
-              value={filters.category}
-              onChange={(e) =>
-                setFilters({ ...filters, category: e.target.value })
-              }
-              className="w-full border rounded px-3 py-2"
-            >
-              <option value="">All</option>
-              <option value="ELECTRONICS">Electronics</option>
-              <option value="WALLETS_CARDS">Wallets & Cards</option>
-              <option value="KEYS">Keys</option>
-              <option value="CLOTHING">Clothing</option>
-              <option value="DOCUMENTS">Documents</option>
-              <option value="OTHER">Other</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2">
-              Campus Zone
-            </label>
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
+        {/* Category Pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1">
+          {CATEGORIES.map((cat) => {
+            const isSelected = filters.category === cat.id
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setFilters({ ...filters, category: cat.id })}
+                className={`text-[10px] uppercase font-bold tracking-[0.15em] px-3.5 py-1.5 rounded-full transition whitespace-nowrap border ${
+                  isSelected
+                    ? "bg-white text-black border-white font-extrabold"
+                    : "bg-[#0a0a0a] text-[#888888] border-[#222222] hover:text-white hover:border-[#444444]"
+                }`}
+              >
+                {cat.label}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Zone Selector & Result Count */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[#1a1a1a]">
+          <div className="w-full sm:w-72">
             <select
               value={filters.campus_zone}
-              onChange={(e) =>
-                setFilters({ ...filters, campus_zone: e.target.value })
-              }
-              className="w-full border rounded px-3 py-2"
+              onChange={(e) => setFilters({ ...filters, campus_zone: e.target.value })}
+              className="w-full border border-[#262626] rounded-xl px-3.5 py-2 bg-[#0a0a0a] text-xs font-body text-[#cccccc] focus:ring-2 focus:ring-[#e63946]"
             >
-              <option value="">All Zones</option>
-              <option value="Library Zone">Library Zone</option>
-              <option value="Engineering Block">Engineering Block</option>
-              <option value="Science Block">Science Block</option>
-              <option value="Hostel">Hostel</option>
-              <option value="Sports Complex">Sports Complex</option>
+              <option value="">🏛️ All Campus Zones</option>
+              {CAMPUS_ZONES.map((z) => (
+                <option key={z.name} value={z.name}>
+                  {z.icon} {z.name}
+                </option>
+              ))}
             </select>
+          </div>
+
+          <div className="flex items-center justify-between w-full sm:w-auto gap-4">
+            <span className="text-xs font-mono text-[#888888]">
+              Showing <span className="text-white font-bold">{items.length}</span> listings
+            </span>
+
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="text-xs font-bold text-[#e63946] hover:underline flex items-center gap-1"
+              >
+                <X className="w-3.5 h-3.5" />
+                Reset Filters
+              </button>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Items Grid */}
+      {/* Grid */}
       {loading ? (
-        <div className="text-center py-12">Loading items...</div>
-      ) : items.length === 0 ? (
-        <div className="text-center py-12 text-gray-600">
-          No items found matching your filters
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
-              key={item.id}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition"
+              key={i}
+              className="unfold-card p-5 space-y-4 animate-pulse"
             >
-              {/* Image with sensitive item blur */}
-              <div className="relative bg-gray-200 h-48 overflow-hidden">
-                {item.is_high_value && item.image_urls.length === 0 ? (
-                  <div className="w-full h-full flex items-center justify-center backdrop-blur-md bg-gray-300">
-                    <span className="text-gray-600 font-semibold">
-                      Sensitive Item - Claim to View
-                    </span>
-                  </div>
-                ) : item.image_urls.length > 0 ? (
-                  <img
-                    src={item.image_urls[0]}
-                    alt={item.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-gray-500">No Image</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="p-4 space-y-2">
-                <div className="flex justify-between items-start">
-                  <h3 className="font-bold text-lg">{item.title}</h3>
-                  <span
-                    className={`px-2 py-1 text-xs rounded ${
-                      item.type === "LOST"
-                        ? "bg-red-100 text-red-800"
-                        : "bg-green-100 text-green-800"
-                    }`}
-                  >
-                    {item.type}
-                  </span>
-                </div>
-
-                <p className="text-sm text-gray-600">
-                  Category: <span className="font-medium">{item.category}</span>
-                </p>
-                <p className="text-sm text-gray-600">
-                  Zone:{" "}
-                  <span className="font-medium">{item.campus_zone}</span>
-                </p>
-
-                <div className="pt-4 flex gap-2">
-                  <button className="flex-1 bg-primary text-white py-2 rounded hover:bg-blue-600">
-                    View Details
-                  </button>
-                  <button className="flex-1 border border-primary text-primary py-2 rounded hover:bg-blue-50">
-                    Claim Match
-                  </button>
-                </div>
+              <div className="bg-[#191919] h-48 rounded-xl w-full"></div>
+              <div className="space-y-2">
+                <div className="h-4 bg-[#191919] rounded w-3/4"></div>
+                <div className="h-3 bg-[#191919] rounded w-full"></div>
+                <div className="h-3 bg-[#191919] rounded w-1/2"></div>
               </div>
             </div>
+          ))}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="unfold-card p-14 text-center space-y-4 max-w-lg mx-auto">
+          <span className="text-4xl">🔍</span>
+          <h3 className="text-xl font-bold text-white">No Listings Found</h3>
+          <p className="text-xs text-[#888888] font-body">
+            No active reports match your search query or zone filters.
+          </p>
+          <div className="flex justify-center gap-3 pt-2">
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="btn-unfold-outline !py-2.5 !px-5 !text-[10px]"
+              >
+                Clear Filters
+              </button>
+            )}
+            <Link href="/report/lost" className="btn-unfold-red !py-2.5 !px-5 !text-[10px]">
+              Post a Report
+            </Link>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {items.map((item) => (
+            <ItemCard key={item.id} item={item} />
           ))}
         </div>
       )}
