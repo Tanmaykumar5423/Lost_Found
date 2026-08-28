@@ -12,7 +12,6 @@ import {
   X, 
   MapPin, 
   Lock,
-  Sparkles
 } from "lucide-react"
 
 interface HandshakeQRProps {
@@ -56,26 +55,26 @@ export default function HandshakeQR({
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5 animate-fade-in-up relative overflow-hidden">
-        {/* Top Header */}
-        <div className="flex justify-between items-center border-b border-slate-100 pb-3.5">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
+    <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+      <div className="bg-[#0d0d0d] text-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-[#262626] space-y-5 animate-fade-in-up relative overflow-hidden">
+        {/* Header */}
+        <div className="flex justify-between items-center border-b border-[#1f1f1f] pb-3.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#e63946]/20 text-[#e63946] flex items-center justify-center font-bold">
               <ShieldCheck className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-slate-900 leading-tight">
+              <h3 className="font-bold text-base text-white leading-tight">
                 Cryptographic Handshake Pass
               </h3>
-              <p className="text-[11px] font-semibold text-slate-400">Zero-Knowledge Verification</p>
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#888888]">Zero-Knowledge Token</p>
             </div>
           </div>
 
           {onClose && (
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition"
+              className="text-[#888888] hover:text-white p-1.5 rounded-full hover:bg-[#1f1f1f] transition"
               aria-label="Close"
             >
               <X className="w-5 h-5" />
@@ -84,24 +83,24 @@ export default function HandshakeQR({
         </div>
 
         {/* QR Ticket Container */}
-        <div className="relative bg-gradient-to-b from-slate-50 to-blue-50/40 border-2 border-dashed border-blue-200 p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
+        <div className="relative bg-[#050505] border-2 border-dashed border-[#333333] p-6 rounded-2xl flex flex-col items-center justify-center shadow-inner">
           {isExpired ? (
-            <div className="h-52 flex flex-col items-center justify-center text-rose-600 space-y-2">
-              <AlertTriangle className="w-12 h-12 text-rose-500 animate-bounce" />
-              <p className="font-extrabold text-base">Handshake Pass Expired</p>
-              <p className="text-xs text-slate-500 max-w-xs text-center">
+            <div className="h-52 flex flex-col items-center justify-center text-[#e63946] space-y-2">
+              <AlertTriangle className="w-12 h-12 text-[#e63946] animate-bounce" />
+              <p className="font-bold text-base">Handshake Pass Expired</p>
+              <p className="text-xs text-[#888888] font-body max-w-xs text-center">
                 For security, tokens are time-limited to 15 minutes. Please re-generate your pass in the claims portal.
               </p>
             </div>
           ) : (
-            <div className="bg-white p-4 rounded-2xl shadow-md border border-slate-100 flex flex-col items-center">
+            <div className="bg-white p-4 rounded-2xl shadow-xl flex flex-col items-center">
               <QRCodeSVG
                 value={qrToken}
                 size={190}
                 level="H"
                 includeMargin={false}
               />
-              <span className="text-[10px] font-mono text-slate-400 mt-2 flex items-center gap-1">
+              <span className="text-[10px] font-mono text-slate-600 mt-2 flex items-center gap-1">
                 <Lock className="w-3 h-3 text-emerald-600" /> Signed JWT Pass
               </span>
             </div>
@@ -110,18 +109,18 @@ export default function HandshakeQR({
           {/* Progress ring / bar */}
           {!isExpired && (
             <div className="w-full mt-4 space-y-1">
-              <div className="flex justify-between text-[11px] font-bold text-slate-500">
+              <div className="flex justify-between text-[10px] font-mono font-bold text-[#888888]">
                 <span className="flex items-center gap-1">
-                  <Clock className="w-3.5 h-3.5 text-blue-600" /> Pass Validity
+                  <Clock className="w-3 h-3 text-[#e63946]" /> Pass Validity
                 </span>
-                <span className="font-mono text-blue-600 text-xs">
+                <span className="text-white text-xs">
                   {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
                 </span>
               </div>
-              <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-[#1f1f1f] h-1.5 rounded-full overflow-hidden">
                 <div
                   className={`h-full transition-all duration-1000 rounded-full ${
-                    secondsRemaining < 120 ? "bg-rose-500" : "bg-blue-600"
+                    secondsRemaining < 120 ? "bg-[#e63946]" : "bg-white"
                   }`}
                   style={{ width: `${progressPercent}%` }}
                 ></div>
@@ -130,14 +129,14 @@ export default function HandshakeQR({
           )}
         </div>
 
-        {/* Handover Safety Checklist */}
-        <div className="bg-slate-50 rounded-2xl p-3.5 border border-slate-200/70 space-y-1.5 text-xs text-slate-600">
-          <p className="font-bold text-slate-800 flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-rose-500" /> Safe Handover Instructions:
+        {/* Safety checklist */}
+        <div className="bg-[#141414] rounded-2xl p-4 border border-[#222222] space-y-1.5 text-xs font-body text-[#888888]">
+          <p className="font-bold text-[#cccccc] flex items-center gap-1 text-xs">
+            <MapPin className="w-3.5 h-3.5 text-[#e63946]" /> Handover Protocol:
           </p>
-          <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-500">
-            <li>Present this QR code to the finder or Campus Security Desk.</li>
-            <li>Once scanned, custody will transfer and +25 Karma will be awarded.</li>
+          <ul className="list-disc list-inside space-y-1 text-[11px] text-[#888888]">
+            <li>Present this QR pass to the finder or Campus Security Desk.</li>
+            <li>Custody transfer logs immediately upon scan and awards +25 Karma.</li>
             <li>Meet in public campus areas (Library Front Desk / Main Quad).</li>
           </ul>
         </div>
@@ -146,16 +145,16 @@ export default function HandshakeQR({
         <div className="flex gap-2">
           <button
             onClick={handleCopy}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 text-xs font-bold border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 transition shadow-2xs"
+            className="btn-unfold-outline flex-1 !py-2.5 !px-3 !text-[10px] inline-flex items-center justify-center gap-1.5"
           >
             {copied ? (
               <>
-                <Check className="w-4 h-4 text-emerald-600" />
+                <Check className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Token Copied!</span>
               </>
             ) : (
               <>
-                <Copy className="w-4 h-4 text-slate-500" />
+                <Copy className="w-3.5 h-3.5" />
                 <span>Copy Token String</span>
               </>
             )}
@@ -164,7 +163,7 @@ export default function HandshakeQR({
           {onClose && (
             <button
               onClick={onClose}
-              className="px-5 py-2.5 text-xs font-bold bg-slate-900 hover:bg-slate-800 text-white rounded-xl transition shadow-sm"
+              className="btn-unfold-primary !py-2.5 !px-6 !text-[10px]"
             >
               Done
             </button>

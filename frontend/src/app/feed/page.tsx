@@ -9,33 +9,26 @@ import Link from "next/link"
 import {
   Search,
   Filter,
-  SlidersHorizontal,
   X,
-  Grid,
-  List,
   Sparkles,
   AlertCircle,
-  ShieldCheck,
   Building2,
-  RefreshCw,
-  PlusCircle,
 } from "lucide-react"
 
 const CATEGORIES = [
-  { id: "", label: "All Categories", icon: "📦" },
-  { id: "ELECTRONICS", label: "Electronics", icon: "💻" },
-  { id: "WALLETS_CARDS", label: "Wallets & Cards", icon: "💳" },
-  { id: "KEYS", label: "Keys & Chains", icon: "🔑" },
-  { id: "CLOTHING", label: "Clothing", icon: "👕" },
-  { id: "DOCUMENTS", label: "Documents & IDs", icon: "📄" },
-  { id: "OTHER", label: "Other Items", icon: "🏷️" },
+  { id: "", label: "All Categories" },
+  { id: "ELECTRONICS", label: "Electronics" },
+  { id: "WALLETS_CARDS", label: "Wallets & Cards" },
+  { id: "KEYS", label: "Keys & Chains" },
+  { id: "CLOTHING", label: "Clothing" },
+  { id: "DOCUMENTS", label: "Documents & IDs" },
+  { id: "OTHER", label: "Other" },
 ]
 
 export default function FeedPage() {
   const [items, setItems] = useState<Item[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState("")
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   const [filters, setFilters] = useState({
     category: "",
     campus_zone: "",
@@ -75,98 +68,86 @@ export default function FeedPage() {
   const hasActiveFilters = search || filters.category || filters.campus_zone || filters.type
 
   return (
-    <div className="space-y-8 animate-fade-in-up">
-      {/* Header & Quick Action Buttons */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-10 animate-fade-in-up">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[#1f1f1f] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-blue-600 bg-blue-50 px-3 py-1 rounded-full border border-blue-100 mb-2">
-            <span>Live Campus Ledger</span>
-          </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Campus Public Feed
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
+          <span className="subheading-section">Live Campus Ledger</span>
+          <h1 className="heading-section mt-1">Campus Public Feed</h1>
+          <p className="text-xs text-[#888888] font-body mt-1">
             Real-time lost & found property reports across academic zones with Zero-Knowledge protection.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 w-full sm:w-auto">
-          <Link
-            href="/report/lost"
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl transition shadow-md shadow-rose-500/20"
-          >
-            <AlertCircle className="w-4 h-4" />
-            <span>Report Lost</span>
+        <div className="flex items-center gap-3">
+          <Link href="/report/lost" className="btn-unfold-red !py-2.5 !px-5 !text-[10px]">
+            Report Lost
           </Link>
-          <Link
-            href="/report/found"
-            className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl transition shadow-md shadow-emerald-500/20"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span>Report Found</span>
+          <Link href="/report/found" className="btn-unfold-outline !py-2.5 !px-5 !text-[10px]">
+            Report Found (+25 Karma)
           </Link>
         </div>
       </div>
 
       {/* Type Toggle Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
+      <div className="flex items-center gap-2 border-b border-[#1f1f1f] pb-3 overflow-x-auto">
         <button
           onClick={() => setFilters({ ...filters, type: "" })}
-          className={`px-4 py-2 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 whitespace-nowrap ${
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
             filters.type === ""
-              ? "bg-slate-900 text-white shadow-xs"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              ? "bg-white text-black font-extrabold"
+              : "bg-[#141414] text-[#888888] hover:text-white"
           }`}
         >
-          <span>All Listings</span>
+          All Listings
         </button>
 
         <button
           onClick={() => setFilters({ ...filters, type: "LOST" })}
-          className={`px-4 py-2 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 whitespace-nowrap ${
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
             filters.type === "LOST"
-              ? "bg-rose-600 text-white shadow-xs"
-              : "bg-rose-50 text-rose-700 hover:bg-rose-100"
+              ? "bg-[#e63946] text-white"
+              : "bg-[#141414] text-[#888888] hover:text-[#e63946]"
           }`}
         >
-          <span>🚨 Lost Items</span>
+          🚨 Lost Items
         </button>
 
         <button
           onClick={() => setFilters({ ...filters, type: "FOUND" })}
-          className={`px-4 py-2 text-xs font-extrabold rounded-xl transition flex items-center gap-1.5 whitespace-nowrap ${
+          className={`px-4 py-2 text-[10px] font-bold uppercase tracking-[0.15em] rounded-full transition whitespace-nowrap ${
             filters.type === "FOUND"
-              ? "bg-emerald-600 text-white shadow-xs"
-              : "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+              ? "bg-emerald-600 text-white"
+              : "bg-[#141414] text-[#888888] hover:text-emerald-400"
           }`}
         >
-          <span>✨ Found Items</span>
+          ✨ Found Items
         </button>
       </div>
 
-      {/* Rich Search & Filter Panel */}
-      <div className="bg-white/90 backdrop-blur-md p-5 sm:p-6 rounded-3xl shadow-xs border border-slate-200/80 space-y-4">
-        {/* Search Bar */}
+      {/* Search & Filter Panel */}
+      <div className="unfold-card p-6 space-y-4">
+        {/* Search */}
         <div className="relative">
-          <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className="w-4 h-4 text-[#666666] absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search items by keywords, brand, color, stickers or location..."
-            className="w-full text-sm font-medium border border-slate-300 rounded-2xl pl-11 pr-10 py-3.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 shadow-2xs"
+            className="w-full text-xs font-body bg-[#0a0a0a] border border-[#262626] rounded-xl pl-11 pr-10 py-3.5 text-white focus:ring-2 focus:ring-[#e63946] focus:border-transparent font-medium"
           />
           {search && (
             <button
               onClick={() => setSearch("")}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 p-1 text-[#666666] hover:text-white rounded-full"
             >
               <X className="w-4 h-4" />
             </button>
           )}
         </div>
 
-        {/* Category Chip Selector */}
+        {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1">
           {CATEGORIES.map((cat) => {
             const isSelected = filters.category === cat.id
@@ -174,26 +155,25 @@ export default function FeedPage() {
               <button
                 key={cat.id}
                 onClick={() => setFilters({ ...filters, category: cat.id })}
-                className={`text-xs px-3.5 py-2 rounded-xl font-bold transition whitespace-nowrap flex items-center gap-1.5 border ${
+                className={`text-[10px] uppercase font-bold tracking-[0.15em] px-3.5 py-1.5 rounded-full transition whitespace-nowrap border ${
                   isSelected
-                    ? "bg-blue-600 text-white border-blue-600 shadow-xs"
-                    : "bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100"
+                    ? "bg-white text-black border-white font-extrabold"
+                    : "bg-[#0a0a0a] text-[#888888] border-[#222222] hover:text-white hover:border-[#444444]"
                 }`}
               >
-                <span>{cat.icon}</span>
-                <span>{cat.label}</span>
+                {cat.label}
               </button>
             )
           })}
         </div>
 
-        {/* Zone Filter & View Mode Controls */}
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2 border-t border-slate-100">
+        {/* Zone Selector & Result Count */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-3 border-t border-[#1a1a1a]">
           <div className="w-full sm:w-72">
             <select
               value={filters.campus_zone}
               onChange={(e) => setFilters({ ...filters, campus_zone: e.target.value })}
-              className="w-full border border-slate-300 rounded-xl px-3.5 py-2 bg-white text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-[#262626] rounded-xl px-3.5 py-2 bg-[#0a0a0a] text-xs font-body text-[#cccccc] focus:ring-2 focus:ring-[#e63946]"
             >
               <option value="">🏛️ All Campus Zones</option>
               {CAMPUS_ZONES.map((z) => (
@@ -205,14 +185,14 @@ export default function FeedPage() {
           </div>
 
           <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-            <span className="text-xs font-bold text-slate-500">
-              Showing <span className="text-blue-600">{items.length}</span> items
+            <span className="text-xs font-mono text-[#888888]">
+              Showing <span className="text-white font-bold">{items.length}</span> listings
             </span>
 
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="text-xs font-bold text-rose-600 hover:text-rose-700 hover:underline flex items-center gap-1"
+                className="text-xs font-bold text-[#e63946] hover:underline flex items-center gap-1"
               >
                 <X className="w-3.5 h-3.5" />
                 Reset Filters
@@ -222,46 +202,40 @@ export default function FeedPage() {
         </div>
       </div>
 
-      {/* Grid of Items */}
+      {/* Grid */}
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-slate-200/80 p-5 space-y-4 shadow-xs animate-pulse"
+              className="unfold-card p-5 space-y-4 animate-pulse"
             >
-              <div className="bg-slate-200 h-48 rounded-xl w-full"></div>
+              <div className="bg-[#191919] h-48 rounded-xl w-full"></div>
               <div className="space-y-2">
-                <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-                <div className="h-3 bg-slate-200 rounded w-full"></div>
-                <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+                <div className="h-4 bg-[#191919] rounded w-3/4"></div>
+                <div className="h-3 bg-[#191919] rounded w-full"></div>
+                <div className="h-3 bg-[#191919] rounded w-1/2"></div>
               </div>
-              <div className="h-8 bg-slate-200 rounded-lg w-full"></div>
             </div>
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-12 sm:p-16 text-center border border-slate-200/80 space-y-4 max-w-lg mx-auto shadow-xs">
-          <div className="w-16 h-16 rounded-3xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto text-2xl font-black">
-            🔍
-          </div>
-          <h3 className="text-xl font-black text-slate-900">No Listings Found</h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
-            No active reports match your current search or zone filters. Try adjusting filters or create a new report.
+        <div className="unfold-card p-14 text-center space-y-4 max-w-lg mx-auto">
+          <span className="text-4xl">🔍</span>
+          <h3 className="text-xl font-bold text-white">No Listings Found</h3>
+          <p className="text-xs text-[#888888] font-body">
+            No active reports match your search query or zone filters.
           </p>
           <div className="flex justify-center gap-3 pt-2">
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                className="px-4 py-2.5 text-xs font-bold border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50"
+                className="btn-unfold-outline !py-2.5 !px-5 !text-[10px]"
               >
-                Clear All Filters
+                Clear Filters
               </button>
             )}
-            <Link
-              href="/report/lost"
-              className="px-4 py-2.5 text-xs font-bold bg-blue-600 text-white rounded-xl hover:bg-blue-700 shadow-md shadow-blue-500/20"
-            >
+            <Link href="/report/lost" className="btn-unfold-red !py-2.5 !px-5 !text-[10px]">
               Post a Report
             </Link>
           </div>

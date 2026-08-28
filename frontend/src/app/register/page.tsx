@@ -11,11 +11,8 @@ import {
   Lock,
   Eye,
   EyeOff,
-  Building2,
   ArrowRight,
   AlertCircle,
-  CheckCircle2,
-  ShieldCheck
 } from "lucide-react"
 
 export default function RegisterPage() {
@@ -63,7 +60,6 @@ export default function RegisterPage() {
     }
   }
 
-  // Password strength gauge
   const getPasswordStrength = () => {
     if (!password) return 0
     let score = 0
@@ -77,100 +73,100 @@ export default function RegisterPage() {
   const strength = getPasswordStrength()
 
   return (
-    <div className="max-w-md mx-auto my-8 animate-fade-in-up">
-      <div className="bg-white/95 backdrop-blur-md p-8 sm:p-9 rounded-3xl shadow-xl border border-slate-200/80 space-y-6">
+    <div className="max-w-md mx-auto my-12 animate-fade-in-up">
+      <div className="unfold-card p-8 sm:p-9 space-y-6 border border-[#262626]">
+        {/* Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto shadow-md shadow-blue-500/20">
-            <Building2 className="w-6 h-6" />
+          <div className="unslate_co--site-logo text-3xl">
+            CLFIS<span>.</span>
           </div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-xl font-bold text-white tracking-tight">
             Create Campus Account
           </h1>
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-[#888888] font-body">
             Sign up with your university email address to report & claim items
           </p>
         </div>
 
         {error && (
-          <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-3.5 rounded-2xl flex items-center gap-2">
+          <div className="bg-[#e63946]/10 border border-[#e63946]/30 text-[#e63946] text-xs p-3.5 rounded-2xl flex items-center gap-2 font-body">
             <AlertCircle className="w-4 h-4 flex-shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleRegister} className="space-y-4 text-sm">
+        <form onSubmit={handleRegister} className="space-y-4 text-sm font-body">
           {/* Full Name */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] mb-1.5">
               Full Name *
             </label>
             <div className="relative">
-              <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <User className="w-4 h-4 text-[#666666] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#0a0a0a] border border-[#262626] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:ring-2 focus:ring-[#e63946]"
                 placeholder="Alex Morgan"
               />
             </div>
           </div>
 
-          {/* Campus Email */}
+          {/* Email */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] mb-1.5">
               Campus Email *
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Mail className="w-4 h-4 text-[#666666] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#0a0a0a] border border-[#262626] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:ring-2 focus:ring-[#e63946] font-mono"
                 placeholder="alex.morgan@college.edu"
               />
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">
-              Must end with university domain (e.g. @college.edu)
+            <p className="text-[10px] font-mono text-[#666666] mt-1">
+              Must end with campus domain (e.g. @college.edu)
             </p>
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] mb-1.5">
               Password *
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-[#666666] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 minLength={8}
-                className="w-full border border-slate-300 rounded-xl pl-10 pr-10 py-2.5 text-xs font-medium focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#0a0a0a] border border-[#262626] rounded-xl pl-10 pr-10 py-2.5 text-xs text-white focus:ring-2 focus:ring-[#e63946] font-mono"
                 placeholder="Min. 8 characters"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#666666] hover:text-white"
               >
                 {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
               </button>
             </div>
 
-            {/* Strength Meter */}
             {password && (
-              <div className="mt-2 space-y-1">
-                <div className="w-full bg-slate-200 h-1 rounded-full overflow-hidden">
+              <div className="mt-2 space-y-1 font-mono">
+                <div className="w-full bg-[#1f1f1f] h-1 rounded-full overflow-hidden">
                   <div
                     className={`h-full transition-all duration-300 ${
                       strength <= 25
-                        ? "bg-rose-500 w-1/4"
+                        ? "bg-[#e63946] w-1/4"
                         : strength <= 50
                         ? "bg-amber-500 w-2/4"
                         : strength <= 75
@@ -179,7 +175,7 @@ export default function RegisterPage() {
                     }`}
                   ></div>
                 </div>
-                <p className="text-[10px] text-slate-400 text-right">
+                <p className="text-[10px] text-[#666666] text-right">
                   {strength <= 25 ? "Weak" : strength <= 50 ? "Fair" : strength <= 75 ? "Good" : "Strong"}
                 </p>
               </div>
@@ -188,17 +184,17 @@ export default function RegisterPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            <label className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] mb-1.5">
               Confirm Password *
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Lock className="w-4 h-4 text-[#666666] absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
-                className="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-2.5 text-xs font-medium focus:ring-2 focus:ring-blue-500"
+                className="w-full bg-[#0a0a0a] border border-[#262626] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white focus:ring-2 focus:ring-[#e63946] font-mono"
                 placeholder="Repeat password"
               />
             </div>
@@ -207,7 +203,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-black py-3 rounded-xl transition shadow-lg shadow-blue-500/25 hover:shadow-xl text-xs flex items-center justify-center gap-2"
+            className="btn-unfold-primary w-full !py-3.5 !text-xs flex items-center justify-center gap-2"
           >
             {loading ? (
               <span>Creating Campus Profile...</span>
@@ -220,9 +216,9 @@ export default function RegisterPage() {
           </button>
         </form>
 
-        <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
+        <div className="text-center pt-2 border-t border-[#1f1f1f] text-xs text-[#888888] font-body">
           Already have an account?{" "}
-          <Link href="/login" className="text-blue-600 font-extrabold hover:underline">
+          <Link href="/login" className="text-[#e63946] font-bold hover:underline">
             Sign In
           </Link>
         </div>

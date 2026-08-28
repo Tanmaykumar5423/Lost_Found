@@ -5,7 +5,7 @@ import { jsPDF } from "jspdf"
 import { Item } from "@/types"
 import { formatDate } from "@/lib/utils"
 import { showToast } from "@/hooks/useStore"
-import { Printer, Download, X, FileText, CheckCircle2, ShieldCheck } from "lucide-react"
+import { Printer, Download, X } from "lucide-react"
 
 interface PosterGeneratorModalProps {
   item: Item
@@ -26,8 +26,8 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
         format: "a4",
       })
 
-      // Top Red Warning Header
-      doc.setFillColor(225, 29, 72) // Rose-600
+      // Header Banner
+      doc.setFillColor(230, 57, 70) // Red
       doc.rect(0, 0, 210, 38, "F")
 
       doc.setFont("helvetica", "bold")
@@ -35,12 +35,12 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
       doc.setTextColor(255, 255, 255)
       doc.text("LOST ITEM NOTICE", 105, 24, { align: "center" })
 
-      // Title Subheading
+      // Title
       doc.setTextColor(15, 23, 42)
       doc.setFontSize(18)
       doc.text(item.title, 105, 52, { align: "center" })
 
-      // Metadata Info Box
+      // Metadata
       doc.setFillColor(248, 250, 252)
       doc.setDrawColor(226, 232, 240)
       doc.roundedRect(20, 60, 170, 36, 4, 4, "FD")
@@ -52,10 +52,10 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
       doc.text(`Campus Zone: ${item.campus_zone}`, 28, 78)
       doc.text(`Date Lost: ${formatDate(item.incident_time)}`, 28, 86)
 
-      // Reward Banner (if provided)
+      // Reward Banner
       if (rewardAmount) {
-        doc.setFillColor(254, 243, 199) // amber-100
-        doc.setDrawColor(245, 158, 11) // amber-500
+        doc.setFillColor(254, 243, 199)
+        doc.setDrawColor(245, 158, 11)
         doc.roundedRect(20, 102, 170, 14, 3, 3, "FD")
         doc.setFont("helvetica", "bold")
         doc.setFontSize(12)
@@ -63,7 +63,7 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
         doc.text(`★ REWARD / KARMA BOUNTY: ${rewardAmount}`, 105, 111, { align: "center" })
       }
 
-      // Description Box
+      // Description
       const descStartY = rewardAmount ? 124 : 104
       doc.setFont("helvetica", "bold")
       doc.setFontSize(13)
@@ -76,7 +76,7 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
       const splitDesc = doc.splitTextToSize(item.description, 170)
       doc.text(splitDesc, 20, descStartY + 8)
 
-      // Return & Handover Instructions
+      // Instructions
       const instructStartY = descStartY + 48
       doc.setFillColor(239, 246, 255)
       doc.setDrawColor(191, 219, 254)
@@ -95,7 +95,7 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
       doc.text(`3. Contact: ${contactInfo}`, 28, instructStartY + 34)
       doc.text("4. Instant +25 Karma Points rewarded upon cryptographic QR handover!", 28, instructStartY + 42)
 
-      // Official Footer
+      // Footer
       doc.setFontSize(9)
       doc.setTextColor(148, 163, 184)
       doc.text(
@@ -117,82 +117,82 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-950/75 backdrop-blur-md z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 space-y-5 animate-fade-in-up">
+    <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-50 flex items-center justify-center p-4">
+      <div className="bg-[#0d0d0d] text-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-[#262626] space-y-5 animate-fade-in-up">
         {/* Header */}
-        <div className="flex justify-between items-center border-b border-slate-100 pb-3.5">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
+        <div className="flex justify-between items-center border-b border-[#1f1f1f] pb-3.5">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#e63946]/20 text-[#e63946] flex items-center justify-center font-bold">
               <Printer className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-extrabold text-base text-slate-900 leading-tight">
+              <h3 className="font-bold text-base text-white leading-tight">
                 Printable Bulletin Flyer Generator
               </h3>
-              <p className="text-[11px] font-semibold text-slate-400">PDF Notice for Campus Notice Boards</p>
+              <p className="text-[10px] font-mono uppercase tracking-wider text-[#888888]">PDF Notice for Notice Boards</p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-1.5 rounded-full hover:bg-slate-100 transition"
+            className="text-[#888888] hover:text-white p-1.5 rounded-full hover:bg-[#1f1f1f] transition"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Live Poster Preview Box */}
-        <div className="border border-slate-200 rounded-2xl p-5 bg-slate-50 space-y-3 shadow-inner">
-          <div className="bg-rose-600 text-white font-black text-center py-2.5 rounded-xl uppercase tracking-wider text-xs shadow-sm">
-            🚨 Lost Item Bulletin Notice
+        {/* Preview */}
+        <div className="border border-[#262626] rounded-2xl p-5 bg-[#0a0a0a] space-y-3">
+          <div className="bg-[#e63946] text-white font-bold text-center py-2.5 rounded-xl uppercase tracking-[0.15em] text-xs">
+            Lost Item Bulletin Notice
           </div>
 
           <div>
-            <h4 className="font-black text-slate-900 text-base">{item.title}</h4>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Zone: <span className="font-semibold text-slate-700">{item.campus_zone}</span> | Category: <span className="font-semibold text-slate-700">{item.category}</span>
+            <h4 className="font-bold text-white text-base">{item.title}</h4>
+            <p className="text-xs text-[#888888] font-body mt-0.5">
+              Zone: <span className="text-white font-semibold">{item.campus_zone}</span> | Category: <span className="text-white font-semibold">{item.category}</span>
             </p>
           </div>
 
-          <p className="text-xs text-slate-600 bg-white p-3 rounded-xl border border-slate-200/70 italic line-clamp-3">
+          <p className="text-xs text-[#cccccc] bg-[#141414] p-3 rounded-xl border border-[#222222] font-body italic line-clamp-3">
             "{item.description}"
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                Reward / Karma Offer
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888888] mb-1">
+                Reward / Bounty
               </label>
               <input
                 type="text"
                 value={rewardAmount}
                 onChange={(e) => setRewardAmount(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 bg-white"
+                className="w-full text-xs font-body bg-[#141414] border border-[#262626] rounded-lg px-3 py-2 text-white"
                 placeholder="e.g. $20 / Coffee treat"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                Contact Info / Desk
+              <label className="block text-[10px] font-bold uppercase tracking-wider text-[#888888] mb-1">
+                Contact Desk
               </label>
               <input
                 type="text"
                 value={contactInfo}
                 onChange={(e) => setContactInfo(e.target.value)}
-                className="w-full text-xs border border-slate-300 rounded-lg px-3 py-2 bg-white"
+                className="w-full text-xs font-body bg-[#141414] border border-[#262626] rounded-lg px-3 py-2 text-white"
                 placeholder="e.g. Security ext. 4400"
               />
             </div>
           </div>
         </div>
 
-        {/* Action Controls */}
+        {/* Actions */}
         <div className="flex items-center gap-3 pt-1">
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 text-xs font-bold border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 transition"
+            className="btn-unfold-outline flex-1 !py-2.5 !text-[10px]"
           >
             Cancel
           </button>
@@ -200,13 +200,13 @@ export default function PosterGeneratorModal({ item, onClose }: PosterGeneratorM
           <button
             onClick={handleDownloadPDF}
             disabled={generating}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 text-xs font-bold bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl transition shadow-md shadow-blue-500/20"
+            className="btn-unfold-primary flex-1 !py-2.5 !text-[10px] inline-flex items-center justify-center gap-1.5"
           >
             {generating ? (
               <span>Generating PDF...</span>
             ) : (
               <>
-                <Download className="w-4 h-4" />
+                <Download className="w-3.5 h-3.5" />
                 <span>Download PDF Flyer</span>
               </>
             )}

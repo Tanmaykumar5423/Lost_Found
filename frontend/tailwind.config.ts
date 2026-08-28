@@ -8,7 +8,22 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-raleway)", "Raleway", "sans-serif"],
+        body: ["var(--font-arimo)", "Arimo", "sans-serif"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+      },
       colors: {
+        dark: {
+          bg: "#000000",
+          card: "#0d0d0d",
+          cardHover: "#141414",
+          surface: "#191919",
+          border: "#262626",
+          borderLight: "#333333",
+          muted: "#888888",
+          text: "#f0f0f0",
+        },
         primary: {
           50: "#eff6ff",
           100: "#dbeafe",
@@ -34,27 +49,11 @@ const config: Config = {
           800: "#5b21b6",
           900: "#4c1d95",
         },
-        success: {
-          50: "#ecfdf5",
-          100: "#d1fae5",
-          200: "#a7f3d0",
-          500: "#10b981",
-          600: "#059669",
-          700: "#047857",
-        },
-        warning: {
-          50: "#fffbeb",
-          100: "#fef3c7",
-          500: "#f59e0b",
-          600: "#d97706",
-          700: "#b45309",
-        },
-        danger: {
-          50: "#fef2f2",
-          100: "#fee2e2",
-          500: "#ef4444",
-          600: "#dc2626",
-          700: "#b91c1c",
+        accent: {
+          red: "#e63946",
+          gold: "#f59e0b",
+          green: "#10b981",
+          blue: "#3b82f6",
         },
       },
       keyframes: {
@@ -66,19 +65,21 @@ const config: Config = {
           "50%": { top: "90%" },
         },
         "fade-in-up": {
-          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
-        "pulse-glow": {
-          "0%, 100%": { opacity: "1", transform: "scale(1)" },
-          "50%": { opacity: "0.85", transform: "scale(1.02)" },
+        "mouse-scroll": {
+          "0%": { opacity: "1", top: "29%" },
+          "15%": { opacity: "1", top: "50%" },
+          "50%": { opacity: "0", top: "50%" },
+          "100%": { opacity: "0", top: "29%" },
         },
       },
       animation: {
         "shimmer": "shimmer 1.8s infinite",
         "laser-scan": "laser-scan 2.5s ease-in-out infinite",
-        "fade-in-up": "fade-in-up 0.3s ease-out forwards",
-        "pulse-glow": "pulse-glow 3s ease-in-out infinite",
+        "fade-in-up": "fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+        "mouse-scroll": "mouse-scroll 2s ease infinite",
       },
     },
   },
@@ -86,4 +87,5 @@ const config: Config = {
 }
 
 export default config
+
 

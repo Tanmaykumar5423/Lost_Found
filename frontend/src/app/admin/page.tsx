@@ -14,15 +14,9 @@ import {
   HeartHandshake,
   Gavel,
   History,
-  TrendingUp,
   AlertCircle,
   CheckCircle2,
-  Lock,
-  Search,
   Download,
-  Calendar,
-  Building2,
-  RefreshCw
 } from "lucide-react"
 
 export default function AdminDeskPage() {
@@ -48,7 +42,7 @@ export default function AdminDeskPage() {
       setUnclaimedItems(vaultRes.data)
       setRecentScans(scansRes.data.scans || [])
     } catch (err: any) {
-      setError(err.response?.data?.detail || "Failed to load administrative security console data")
+      setError(err.response?.data?.detail || "Failed to load security console data")
     } finally {
       setLoading(false)
     }
@@ -74,7 +68,7 @@ export default function AdminDeskPage() {
   }
 
   const handleScanSuccess = (result: any) => {
-    showToast.success("Handshake verified! Item marked resolved and recorded in audit ledger.")
+    showToast.success("Handshake verified! Recorded in audit ledger.")
     loadAdminData()
   }
 
@@ -105,18 +99,13 @@ export default function AdminDeskPage() {
 
   if (!isAuthenticated || !isAdmin) {
     return (
-      <div className="max-w-md mx-auto text-center py-16 space-y-4 animate-fade-in-up">
-        <div className="w-16 h-16 rounded-3xl bg-rose-50 text-rose-600 flex items-center justify-center mx-auto text-3xl font-black">
-          🛡️
-        </div>
-        <h1 className="text-2xl font-black text-slate-900">Restricted Security Console</h1>
-        <p className="text-xs text-slate-500 max-w-sm mx-auto">
-          This portal is restricted to Campus Security Administrators and verified Staff.
+      <div className="max-w-md mx-auto text-center py-20 space-y-5 animate-fade-in-up">
+        <span className="text-5xl">🛑</span>
+        <h1 className="text-2xl font-bold text-white">Restricted Security Console</h1>
+        <p className="text-xs text-[#888888] font-body max-w-sm mx-auto">
+          This portal is restricted to Campus Security Administrators and authorized staff.
         </p>
-        <Link
-          href="/login"
-          className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl text-xs transition shadow-md shadow-blue-500/25"
-        >
+        <Link href="/login" className="btn-unfold-primary inline-block">
           Sign In with Admin Account
         </Link>
       </div>
@@ -124,79 +113,72 @@ export default function AdminDeskPage() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in-up">
+    <div className="space-y-10 animate-fade-in-up">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-[#1f1f1f] pb-6">
         <div>
-          <div className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-amber-800 bg-amber-50 px-3 py-1 rounded-full border border-amber-200 mb-2">
-            <Shield className="w-3.5 h-3.5 text-amber-600" />
-            <span>Campus Security Console</span>
-          </div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">
-            Security Desk & Asset Vault
-          </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <span className="subheading-section">Campus Security Command</span>
+          <h1 className="heading-section mt-1">Security Desk & Vault</h1>
+          <p className="text-xs text-[#888888] font-body mt-1">
             Physical handover verification scanner, 45-day vault asset lifecycle & custody audit ledger.
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setShowScanner(true)}
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold px-5 py-3 rounded-2xl shadow-lg shadow-blue-500/25 hover:shadow-xl transition text-xs"
-          >
-            <Camera className="w-4 h-4" />
-            <span>Scan Handshake QR Pass</span>
-          </button>
-        </div>
+        <button
+          onClick={() => setShowScanner(true)}
+          className="btn-unfold-red !py-3 !px-6 !text-xs inline-flex items-center gap-2"
+        >
+          <Camera className="w-4 h-4" />
+          <span>Scan Handshake QR Pass</span>
+        </button>
       </div>
 
       {error && (
-        <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-4 rounded-2xl flex items-center gap-2">
+        <div className="bg-[#e63946]/10 border border-[#e63946]/30 text-[#e63946] text-xs p-4 rounded-2xl flex items-center gap-2">
           <AlertCircle className="w-4 h-4 flex-shrink-0" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Real-time KPI Stats Cards */}
+      {/* KPI Stats */}
       {stats && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Resolution Rate</p>
-            <p className="text-3xl font-black text-blue-600 mt-1.5 font-mono">{stats.resolution_rate}%</p>
-            <p className="text-[11px] text-slate-400 mt-1">{stats.resolved_items} of {stats.total_items} items returned</p>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="unfold-card p-6 text-center space-y-1">
+            <p className="subheading-section !text-[10px]">Resolution Rate</p>
+            <p className="text-3xl sm:text-4xl font-black text-white font-mono">{stats.resolution_rate}%</p>
+            <p className="text-[11px] text-[#888888] font-body">{stats.resolved_items} of {stats.total_items} returned</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Lost Reports</p>
-            <p className="text-3xl font-black text-rose-600 mt-1.5 font-mono">{stats.lost_items}</p>
-            <p className="text-[11px] text-slate-400 mt-1">Open lost listings</p>
+          <div className="unfold-card p-6 text-center space-y-1">
+            <p className="subheading-section !text-[10px]">Lost Reports</p>
+            <p className="text-3xl sm:text-4xl font-black text-[#e63946] font-mono">{stats.lost_items}</p>
+            <p className="text-[11px] text-[#888888] font-body">Open lost listings</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Found Reports</p>
-            <p className="text-3xl font-black text-emerald-600 mt-1.5 font-mono">{stats.found_items}</p>
-            <p className="text-[11px] text-slate-400 mt-1">Reported by finders</p>
+          <div className="unfold-card p-6 text-center space-y-1">
+            <p className="subheading-section !text-[10px]">Found Reports</p>
+            <p className="text-3xl sm:text-4xl font-black text-emerald-400 font-mono">{stats.found_items}</p>
+            <p className="text-[11px] text-[#888888] font-body">Reported by finders</p>
           </div>
 
-          <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-slate-200/80 shadow-xs">
-            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">AI Matches</p>
-            <p className="text-3xl font-black text-purple-600 mt-1.5 font-mono">{stats.total_matches}</p>
-            <p className="text-[11px] text-slate-400 mt-1">{stats.high_confidence_matches} high confidence</p>
+          <div className="unfold-card p-6 text-center space-y-1">
+            <p className="subheading-section !text-[10px]">AI Matches</p>
+            <p className="text-3xl sm:text-4xl font-black text-purple-400 font-mono">{stats.total_matches}</p>
+            <p className="text-[11px] text-[#888888] font-body">{stats.high_confidence_matches} high confidence</p>
           </div>
         </div>
       )}
 
-      {/* Unclaimed Asset Vault (45-Day Policy Table) */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-5">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+      {/* Unclaimed Asset Vault */}
+      <div className="unfold-card p-6 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#1f1f1f] pb-4">
           <div>
-            <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <Archive className="w-5 h-5 text-amber-600" />
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <Archive className="w-5 h-5 text-amber-400" />
               <span>Unclaimed Asset Vault (45-Day Lifecycle)</span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Items unrecovered after 45 days are eligible for verified student welfare donation or campus green auction.
+            <p className="text-xs text-[#888888] font-body mt-0.5">
+              Items unrecovered after 45 days are eligible for student welfare donation or campus green auction.
             </p>
           </div>
 
@@ -205,7 +187,7 @@ export default function AdminDeskPage() {
               <button
                 onClick={() => handleProcessVault("donation")}
                 disabled={processingVault}
-                className="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md shadow-emerald-500/20"
+                className="btn-unfold-outline !py-2 !px-4 !text-[10px] inline-flex items-center gap-1.5"
               >
                 <HeartHandshake className="w-3.5 h-3.5" />
                 <span>Donate ({unclaimedItems.length})</span>
@@ -213,7 +195,7 @@ export default function AdminDeskPage() {
               <button
                 onClick={() => handleProcessVault("auction")}
                 disabled={processingVault}
-                className="inline-flex items-center gap-1.5 bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-md shadow-purple-500/20"
+                className="btn-unfold-primary !py-2 !px-4 !text-[10px] inline-flex items-center gap-1.5"
               >
                 <Gavel className="w-3.5 h-3.5" />
                 <span>Auction ({unclaimedItems.length})</span>
@@ -224,16 +206,16 @@ export default function AdminDeskPage() {
 
         {unclaimedItems.length === 0 ? (
           <div className="text-center py-10 space-y-2">
-            <CheckCircle2 className="w-10 h-10 text-emerald-500 mx-auto" />
-            <p className="text-sm font-bold text-slate-800">Vault Lifecycle Clear</p>
-            <p className="text-xs text-slate-400">
+            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
+            <p className="text-sm font-bold text-white">Vault Lifecycle Clear</p>
+            <p className="text-xs text-[#888888] font-body">
               No items currently exceed the 45-day unclaimed threshold.
             </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 uppercase border-y border-slate-200">
+            <table className="w-full text-left text-xs font-body">
+              <thead className="bg-[#050505] text-[#888888] uppercase border-y border-[#262626]">
                 <tr>
                   <th className="py-3 px-4 font-bold">Item</th>
                   <th className="py-3 px-4 font-bold">Category</th>
@@ -242,15 +224,15 @@ export default function AdminDeskPage() {
                   <th className="py-3 px-4 font-bold">Status</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1a1a1a]">
                 {unclaimedItems.map((item) => (
-                  <tr key={item.id} className="hover:bg-slate-50/80 transition">
-                    <td className="py-3.5 px-4 font-bold text-slate-900">{item.title}</td>
-                    <td className="py-3.5 px-4 font-medium text-slate-600">{item.category}</td>
-                    <td className="py-3.5 px-4 text-slate-600">{item.campus_zone}</td>
-                    <td className="py-3.5 px-4 text-slate-500">{formatDate(item.created_at)}</td>
-                    <td className="py-3.5 px-4 font-extrabold text-amber-700">
-                      <span className="bg-amber-100 px-2 py-0.5 rounded-md">
+                  <tr key={item.id} className="hover:bg-[#141414] transition">
+                    <td className="py-3.5 px-4 font-bold text-white">{item.title}</td>
+                    <td className="py-3.5 px-4 text-[#cccccc]">{item.category}</td>
+                    <td className="py-3.5 px-4 text-[#888888]">{item.campus_zone}</td>
+                    <td className="py-3.5 px-4 text-[#888888] font-mono">{formatDate(item.created_at)}</td>
+                    <td className="py-3.5 px-4 font-mono font-bold text-amber-400">
+                      <span className="bg-amber-950 px-2 py-0.5 rounded-md border border-amber-800">
                         {item.status}
                       </span>
                     </td>
@@ -263,54 +245,54 @@ export default function AdminDeskPage() {
       </div>
 
       {/* Custody Audit Ledger */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-5">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-slate-100 pb-4">
+      <div className="unfold-card p-6 sm:p-7 space-y-5">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 border-b border-[#1f1f1f] pb-4">
           <div>
-            <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <History className="w-5 h-5 text-blue-600" />
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <History className="w-5 h-5 text-blue-400" />
               <span>Physical Custody & QR Handshake Audit Log</span>
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-[#888888] font-body mt-0.5">
               Immutable ledger tracking verified returns, officer badges, and timestamps.
             </p>
           </div>
 
           <button
             onClick={exportAuditCSV}
-            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 px-3.5 py-2 rounded-xl transition shadow-2xs"
+            className="btn-unfold-outline !py-2 !px-4 !text-[10px] inline-flex items-center gap-1.5"
           >
-            <Download className="w-3.5 h-3.5 text-slate-500" />
+            <Download className="w-3.5 h-3.5" />
             <span>Export CSV</span>
           </button>
         </div>
 
         {recentScans.length === 0 ? (
-          <div className="text-center py-10 text-slate-400 text-xs">
-            No handshake handovers recorded in this session.
+          <div className="text-center py-10 text-[#666666] text-xs font-body">
+            No handshake handovers logged in this session.
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600 uppercase border-y border-slate-200">
+            <table className="w-full text-left text-xs font-body">
+              <thead className="bg-[#050505] text-[#888888] uppercase border-y border-[#262626]">
                 <tr>
                   <th className="py-3 px-4 font-bold">Claim ID</th>
                   <th className="py-3 px-4 font-bold">Claimant</th>
-                  <th className="py-3 px-4 font-bold">Verified By Officer</th>
+                  <th className="py-3 px-4 font-bold">Verified By</th>
                   <th className="py-3 px-4 font-bold">Handover Timestamp</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-[#1a1a1a]">
                 {recentScans.map((scan, idx) => (
-                  <tr key={idx} className="hover:bg-slate-50/80 transition">
-                    <td className="py-3.5 px-4 font-black text-blue-600 font-mono">#{scan.claim_id}</td>
-                    <td className="py-3.5 px-4 font-semibold text-slate-900">
-                      {scan.claimant_name} <span className="text-slate-400 font-normal">({scan.claimant_email})</span>
+                  <tr key={idx} className="hover:bg-[#141414] transition">
+                    <td className="py-3.5 px-4 font-mono font-bold text-blue-400">#{scan.claim_id}</td>
+                    <td className="py-3.5 px-4 text-white">
+                      {scan.claimant_name} <span className="text-[#888888] font-mono">({scan.claimant_email})</span>
                     </td>
-                    <td className="py-3.5 px-4 font-medium text-slate-700 flex items-center gap-1">
-                      <Shield className="w-3 h-3 text-amber-500" />
+                    <td className="py-3.5 px-4 text-[#cccccc] flex items-center gap-1">
+                      <Shield className="w-3.5 h-3.5 text-amber-400" />
                       {scan.verified_by}
                     </td>
-                    <td className="py-3.5 px-4 text-slate-500 font-mono">{formatDate(scan.resolved_at)}</td>
+                    <td className="py-3.5 px-4 text-[#888888] font-mono">{formatDate(scan.resolved_at)}</td>
                   </tr>
                 ))}
               </tbody>

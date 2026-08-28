@@ -1,57 +1,263 @@
+@import url('https://fonts.googleapis.com/css?family=Arimo:400|Raleway:300,400,700,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --foreground-rgb: 15, 23, 42;
-    --background-rgb: 248, 250, 252;
+    --font-raleway: 'Raleway', sans-serif;
+    --font-arimo: 'Arimo', sans-serif;
+    --foreground-rgb: 240, 240, 240;
+    --background-rgb: 0, 0, 0;
   }
 
   body {
-    color: rgb(var(--foreground-rgb));
-    background-color: #f8fafc;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0px, transparent 50%),
-      radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.04) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.03) 0px, transparent 50%);
-    background-attachment: fixed;
+    font-family: var(--font-raleway);
+    color: #f0f0f0;
+    background-color: #000000;
+    line-height: 1.8;
+    font-weight: 300;
+    overflow-x: hidden;
+    selection-background-color: #e63946;
   }
 
-  /* Custom clean scrollbars */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-raleway);
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  p, span, label, input, textarea, select {
+    font-family: var(--font-arimo);
+  }
+
+  /* Custom Unfold dark scrollbars */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: transparent;
+    background: #0a0a0a;
   }
   ::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #262626;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8;
+    background: #e63946;
   }
 }
 
-@layer utilities {
-  .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(226, 232, 240, 0.8);
-  }
-
-  .glass-card-dark {
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(51, 65, 85, 0.6);
-  }
-
-  .text-balance {
-    text-wrap: balance;
-  }
+/* Unfold Grid Lines */
+.lines-wrap {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
 }
 
+.lines-wrap .lines-inner {
+  position: absolute;
+  width: 1140px;
+  left: 50%;
+  margin-left: -570px;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.lines-wrap .lines-inner .lines {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  height: 100%;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Unfold Logo */
+.unslate_co--site-logo {
+  font-family: 'Raleway', sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.unslate_co--site-logo span {
+  color: #e63946;
+}
+
+/* Unfold Hero & Cover */
+.cover-v1 {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, rgba(230, 57, 70, 0.08) 0%, rgba(0, 0, 0, 0.95) 70%, #000000 100%);
+}
+
+
+.cover-v1 .heading-hero {
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.cover-v1 .subheading-hero {
+  font-size: clamp(0.9rem, 2vw, 1.25rem);
+  font-weight: 300;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.6;
+}
+
+/* Unfold Animated Mouse Scroll Widget */
+.mouse-wrap {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+}
+
+.mouse-wrap:hover {
+  color: #ffffff;
+}
+
+.mouse-wrap .mouse {
+  position: relative;
+  width: 22px;
+  height: 38px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  display: block;
+}
+
+.mouse-wrap .mouse .scroll {
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  margin-left: -2px;
+  width: 4px;
+  height: 6px;
+  background: #ffffff;
+  border-radius: 2px;
+  animation: mouse-scroll 1.8s ease infinite;
+}
+
+.mouse-wrap .mouse-label {
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* Unfold Pill Buttons */
+.btn-unfold-primary {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  background-color: #ffffff;
+  color: #000000;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-unfold-primary:hover {
+  background-color: #e63946;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(230, 57, 70, 0.4);
+}
+
+.btn-unfold-outline {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 13px 30px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  background: transparent;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-unfold-outline:hover {
+  border-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-unfold-red {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  border-radius: 9999px;
+  background-color: #e63946;
+  color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-unfold-red:hover {
+  background-color: #d62828;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(230, 57, 70, 0.5);
+}
+
+/* Unfold Section Titles */
+.heading-section {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+
+.subheading-section {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #e63946;
+}
+
+/* Glass Dark Cards */
+.unfold-card {
+  background: #0d0d0d;
+  border: 1px solid #1f1f1f;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.unfold-card:hover {
+  background: #141414;
+  border-color: #333333;
+  transform: translateY(-3px);
+  box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.8);
+}
