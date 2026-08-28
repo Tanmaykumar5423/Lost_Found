@@ -21,7 +21,8 @@ export default function LoginPage() {
     try {
       const response = await authService.login(email, password)
       login(response.data.user, response.data.access_token)
-      router.push("/dashboard")
+      const redirect = new URLSearchParams(window.location.search).get("redirect")
+      router.push(redirect || "/dashboard")
     } catch (err: any) {
       setError(
         err.response?.data?.detail ||

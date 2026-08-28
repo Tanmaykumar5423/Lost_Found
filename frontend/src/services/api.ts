@@ -9,6 +9,17 @@ const apiClient = axios.create({
   },
 })
 
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("token")
+      localStorage.removeItem("user")
+    }
+    return Promise.reject(error)
+  },
+)
+
 // Add token to requests
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token")
@@ -30,9 +41,7 @@ export const authService = {
 
 export const itemService = {
   reportItem: (formData: FormData) =>
-    apiClient.post("/items/report", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    }),
+    apiClient.post("/items/report", formData),
   
   getFeed: (skip = 0, limit = 20, filters?: any) =>
     apiClient.get("/items/feed", { params: { skip, limit, ...filters } }),

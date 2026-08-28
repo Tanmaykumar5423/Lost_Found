@@ -10,6 +10,7 @@ from app.core.config import get_settings
 from app.models.item import Item, ItemType, ItemCategory, ItemStatus
 from app.schemas.item import ItemCreate, ItemResponse, ItemListResponse
 from app.utils.validators import validate_file_extension, extract_ocr_tokens
+from app.core.security import get_current_user_id
 
 router = APIRouter()
 settings = get_settings()
@@ -26,7 +27,7 @@ async def report_item(
     latitude: Optional[float] = Form(None),
     longitude: Optional[float] = Form(None),
     images: Optional[List[UploadFile]] = File(None),
-    user_id: int = None,
+    user_id: int = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """Report a lost or found item with up to 3 images"""
@@ -139,7 +140,7 @@ async def get_item(item_id: int, db: Session = Depends(get_db)):
 
 @router.get("/", response_model=List[ItemResponse])
 async def get_user_items(
-    user_id: int = None,
+    user_id: int = Depends(get_current_user_id),
     db: Session = Depends(get_db)
 ):
     """Get user's items"""

@@ -2,10 +2,26 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import JWTError, jwt
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from app.core.config import get_settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 settings = get_settings()
+bearer_scheme = HTTPBearer(auto_error=False)
+
+def get_current_user_id(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
+) -> int:
+    if not credentials:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
+
+    payload = verify_token(credentials.credentials)
+    user_id = payload.get("sub") if payload else None
+    if not user_id:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+
+    return int(user_id)
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)

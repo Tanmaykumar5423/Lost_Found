@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { itemService } from "@/services/api"
 
@@ -17,6 +17,23 @@ export default function ReportLostPage() {
   const [images, setImages] = useState<File[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [dragActive, setDragActive] = useState(false)
+  const [previews, setPreviews] = useState<string[]>([])
+
+  const hasToken = () => Boolean(localStorage.getItem("token"))
+
+  useEffect(() => {
+    const nextPreviews = images.map((image) => URL.createObjectURL(image))
+    setPreviews(nextPreviews)
+    return () => nextPreviews.forEach((preview) => URL.revokeObjectURL(preview))
+  }, [images])
+
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      router.replace("/login?redirect=/report/lost")
+    }
+  }, [router])
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -31,14 +48,30 @@ export default function ReportLostPage() {
     })
   }
 
-  const handleImageDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    const files = Array.from(e.dataTransfer.files).slice(0, 3)
-    setImages([...images, ...files])
+  const addImages = (selectedFiles: File[]) => {
+    const validFiles = selectedFiles.filter((file) => file.type.startsWith("image/"))
+    setImages((current) => [...current, ...validFiles].slice(0, 3))
   }
+
+  const handleImageDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault()
+    setDragActive(false)
+    addImages(Array.from(e.dataTransfer.files))
+  }
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    addImages(Array.from(e.target.files || []))
+    e.target.value = ""
+  }
+
+  const removeImage = (index: number) => setImages((current) => current.filter((_, fileIndex) => fileIndex !== index))
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!hasToken()) {
+      router.push("/login?redirect=/report/lost")
+      return
+    }
     setLoading(true)
     setError("")
 
@@ -57,15 +90,22 @@ export default function ReportLostPage() {
       await itemService.reportItem(form)
       router.push("/dashboard")
     } catch (err: any) {
-      setError("Failed to report item")
+      const detail = err.response?.data?.detail
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token")
+        localStorage.removeItem("user")
+        router.replace("/login?redirect=/report/lost")
+        return
+      }
+      setError(Array.isArray(detail) ? detail.map((item: any) => item.msg).join(" ") : detail || "Failed to report item")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Report Lost Item</h1>
+    <div className="report-page">
+      <div className="report-heading"><div><p className="eyebrow">New case</p><h1 className="display-title">Report Lost Item</h1></div><span className="report-close" aria-hidden="true">×</span></div>
 
       {error && (
         <div className="bg-red-100 text-red-700 p-3 rounded mb-4">
@@ -73,7 +113,7 @@ export default function ReportLostPage() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow space-y-4">
+      <form onSubmit={handleSubmit} className="report-form">
         <div>
           <label className="block text-sm font-medium mb-1">Title *</label>
           <input
@@ -160,33 +200,13 @@ export default function ReportLostPage() {
           </label>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-2">
-            Add Photos (up to 3)
+        <div className="image-upload-field">
+          <div className="image-upload-header"><label>Add photos</label><span>{images.length}/3 selected</span></div>
+          <input id="item-images" ref={fileInputRef} type="file" multiple accept="image/jpeg,image/png,image/gif,image/webp" onChange={handleImageSelect} className="image-input" />
+          <label htmlFor="item-images" className={`image-dropzone ${dragActive ? "is-dragging" : ""}`} onDragEnter={(event) => { event.preventDefault(); setDragActive(true) }} onDragOver={(event) => event.preventDefault()} onDragLeave={() => setDragActive(false)} onDrop={handleImageDrop}>
+            <span className="upload-cloud">↑</span><strong>Drop images here or <u>browse</u></strong><small>PNG, JPG, GIF or WEBP · up to 3 images</small>
           </label>
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={handleImageDrop}
-            className="border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-gray-50"
-          >
-            <p className="text-gray-600">Drag and drop images here</p>
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) =>
-                setImages(
-                  Array.from(e.target.files || []).slice(0, 3)
-                )
-              }
-              className="hidden"
-            />
-          </div>
-          {images.length > 0 && (
-            <p className="text-sm text-gray-600 mt-2">
-              {images.length} image(s) selected
-            </p>
-          )}
+          {previews.length > 0 && <div className="image-preview-grid">{previews.map((preview, index) => <div className="image-preview" key={preview}><img src={preview} alt={`Selected item photo ${index + 1}`} /><button type="button" onClick={(event) => { event.stopPropagation(); removeImage(index) }} aria-label={`Remove image ${index + 1}`}>×</button></div>)}</div>}
         </div>
 
         <button
