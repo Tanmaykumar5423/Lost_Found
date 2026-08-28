@@ -1,8 +1,14 @@
-from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Boolean, ARRAY, Float, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Enum, Text, Boolean, ARRAY, Float, ForeignKey, JSON
 from sqlalchemy.sql import func
 from app.core.database import Base
-from pgvector.sqlalchemy import Vector
 import enum
+
+try:
+    from pgvector.sqlalchemy import Vector
+except ImportError:
+    # Fallback to JSON or TypeDecorator when running lightweight
+    def Vector(dim):
+        return JSON
 
 class ItemType(str, enum.Enum):
     LOST = "LOST"
@@ -36,10 +42,10 @@ class Item(Base):
     latitude = Column(Float)
     longitude = Column(Float)
     incident_time = Column(DateTime(timezone=True), nullable=False, index=True)
-    image_urls = Column(ARRAY(String(500)), default=[])
+    image_urls = Column(JSON, default=list)
     image_embedding = Column(Vector(768))
     text_embedding = Column(Vector(768))
-    ocr_tokens = Column(ARRAY(String), default=[])
+    ocr_tokens = Column(JSON, default=list)
     is_high_value = Column(Boolean, default=False)
     private_details = Column(Text)
     status = Column(Enum(ItemStatus), default=ItemStatus.OPEN, index=True)
